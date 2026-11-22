@@ -16,6 +16,8 @@ class BuildTests(unittest.TestCase):
         shutil.copytree(ROOT / "web", self.root / "web")
         shutil.copyfile(ROOT / "tool.json", self.root / "tool.json")
         shutil.copyfile(ROOT / "README.md", self.root / "README.md")
+        shutil.copytree(ROOT / "data", self.root / "data")
+        shutil.copytree(ROOT / "archive", self.root / "archive")
 
     def edit(self, **changes):
         tool = json.loads((self.root / "tool.json").read_text())

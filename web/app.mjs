@@ -1,37 +1,20 @@
-import { cleanLines } from './model.mjs';
-const input = document.querySelector('#input');
-const output = document.querySelector('#output');
-const status = document.querySelector('#status');
-const copy = document.querySelector('#copy');
-function update() {
-  const result = cleanLines(input.value);
-  output.value = result.text;
-  status.textContent = `${result.count} unique ${result.count === 1 ? 'line' : 'lines'}; ${result.removed} ${result.removed === 1 ? 'duplicate' : 'duplicates'} removed.`;
-  copy.disabled = result.count === 0;
-}
-input.addEventListener('input', update);
-document.querySelector('#sample').addEventListener('click', () => {
-  input.value = '  Halifax\nLangley\nHalifax\n\nVancouver  ';
-  update();
-});
-document.querySelector('#clear').addEventListener('click', () => {
-  input.value = '';
-  update();
-  input.focus();
-});
-if (navigator.clipboard && window.isSecureContext) {
-  copy.hidden = false;
-  copy.disabled = true;
-  copy.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(output.value);
-      status.textContent = 'Result copied.';
-    } catch {
-      output.focus();
-      output.select();
-      status.textContent = 'Copy was unavailable. The result is selected so you can copy it manually.';
-    }
-  });
-}
-// Namespace future preference storage as coolcode:<tool-id>:<key>.
-// Do not persist pasted text or uploads by default.
+import {assess,parseInventory,csv} from './model.mjs';
+const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
+const key='coolcode:rackexpiry:inventory';let records=[],inventory=[];
+$('asof').value=new Date().toISOString().slice(0,10);
+function notice(t){$('notice').textContent=t;}
+function download(name,type,text){const a=el('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function scored(){return inventory.map((r,i)=>({...r,index:i,productInfo:records.find(p=>p.id===r.product),...assess(records.find(p=>p.id===r.product),r.version,$('asof').value)})).sort((a,b)=>a.rank-b.rank||(a.days??Infinity)-(b.days??Infinity));}
+function datum(parent,label,value){const d=el('div');d.append(el('span',label),el('b',value));parent.append(d);}
+function render(){const rows=scored();$('total').textContent=rows.length;for(const k of ['ended','due','unknown'])$(k).textContent=rows.filter(r=>r.tone===k).length;$('inventory').replaceChildren();const visible=rows.filter(r=>$('filter').value==='all'||r.tone===$('filter').value);$('empty').hidden=visible.length>0;$('empty').textContent=rows.length?'No systems match this filter.':'Add a system, import an inventory, or load the example stack to see your upgrade queue.';for(const r of visible){const article=el('article',undefined,'item'),body=el('div'),remove=el('button','×','remove');remove.setAttribute('aria-label','Remove '+r.asset+' '+r.product);remove.onclick=()=>{inventory.splice(r.index,1);render();};body.append(el('span',r.status,'badge '+r.tone),el('h3',r.asset),el('p',(r.productInfo?.name||r.product)+' · '+r.version));const data=el('div',undefined,'item-data');datum(data,'MATCHED CYCLE',r.release?.name||'Not found');datum(data,'STANDARD SUPPORT ENDS',r.release?.eolFrom?.slice(0,10)||'Date not published');datum(data,'LATEST ON BRANCH',r.release?.latest?.name||'Unknown');body.append(data);if(r.release?.eoesFrom){body.append(el('p','Extended support date: '+r.release.eoesFrom.slice(0,10)+' — entitlement not checked.','small'));}if(r.productInfo){const a=el('a','Source & vendor policy ↗');a.href='https://endoflife.date/'+r.product;a.target='_blank';a.rel='noopener noreferrer';body.append(a);}article.append(body,remove);$('inventory').append(article);}}
+function catalogue(){const p=records.find(p=>p.id===$('browse').value);$('cycles').replaceChildren();if(!p)return;$('catalogue-info').textContent=(p.labels.eoas||'Active support')+' and '+(p.labels.eol||'standard end of life')+' are source-defined milestones. Latest branch version is not automatically a compatible upgrade.';for(const r of p.releases){const tr=el('tr');for(const text of [r.name+(r.isLts?' · LTS':''),r.releaseDate||'Unknown',r.eoasFrom?.slice(0,10)||'Not published',r.eolFrom?.slice(0,10)||(r.isEol===true?'Ended · date unknown':'Not published'),r.latest?.name||'Unknown'])tr.append(el('td',text));$('cycles').append(tr);}}
+$('add').onsubmit=e=>{e.preventDefault();if(!records.length)return notice('Wait for the support catalogue to load.');inventory.push({asset:$('asset').value.trim(),product:$('product').value,version:$('version').value.trim()});notice('Added locally. Save again if you want to retain these changes.');render();};
+$('example').onclick=()=>{inventory=[{asset:'Example web server',product:'ubuntu',version:'22.04'},{asset:'Example application',product:'php',version:'8.2'},{asset:'Example database',product:'mariadb',version:'10.11'},{asset:'Example old worker',product:'nodejs',version:'18.20'},{asset:'Example unidentified appliance',product:'unknown-appliance',version:'1.0'}];notice('Illustrative example loaded. It does not describe your actual devices.');render();};
+$('clear').onclick=()=>{inventory=[];render();notice('Temporary inventory cleared. Use Forget to remove a saved copy.');};
+$('save').onclick=()=>{try{localStorage.setItem(key,JSON.stringify(inventory));$('storage').textContent='Saved on this browser. Later edits are not saved automatically.';notice('Local copy saved.');}catch{notice('Storage is unavailable. Export your inventory instead.');}};
+$('forget').onclick=()=>{try{localStorage.removeItem(key);$('storage').textContent='Saved copy removed. Current inventory remains temporary.';}catch{notice('Storage is unavailable.');}};
+function importText(t){try{inventory=parseInventory(t);notice('Imported locally. Nothing was uploaded.');render();}catch(e){notice(e.message);}}
+$('import').onclick=()=>importText($('bulk').value);$('file').onchange=async()=>{const f=$('file').files[0];if(!f)return;if(f.size>200000)return notice('Keep imports under 200 KB.');importText(await f.text());};
+$('export').onclick=()=>download('rack-expiry-'+$('asof').value+'.csv','text/csv',csv([['asset','product','version','status','matched_cycle','support_end','assessed_on','catalogue_checked_at'],...scored().map(r=>[r.asset,r.product,r.version,r.status,r.release?.name,r.release?.eolFrom,$('asof').value,window.checkedAt])]));
+$('filter').onchange=render;$('asof').onchange=()=>{if($('asof').value)render();};$('browse').onchange=catalogue;
+try{const data=await fetch('./data/current.json').then(r=>{if(!r.ok)throw Error();return r.json();});records=data.records;window.checkedAt=data.checked_at;for(const id of ['product','browse'])for(const r of records){const option=el('option',r.name);option.value=r.id;$(id).append(option);}$('product').value='php';$('browse').value='php';const age=Math.floor((Date.now()-Date.parse(data.checked_at))/86400000);$('freshness').textContent=records.length+' products · checked '+data.checked_at.slice(0,10)+(age>10?' · Catalogue is stale; verify with the source.':' · updated weekly');try{const saved=localStorage.getItem(key);if(saved){inventory=parseInventory(saved);$('storage').textContent='Restored your saved local inventory. Edits are not saved automatically.';}}catch{notice('Saved inventory could not be restored.');}render();catalogue();const history=await fetch('./data/history.json').then(r=>r.json());for(const h of history.slice(-8).reverse()){const li=el('li'),a=el('a',h.captured_at.slice(0,10)+' · '+(h.initial?'initial baseline':h.changed+' products changed'));a.href='./'+h.file;li.append(a);$('history').append(li);}}catch{$('freshness').textContent='Support catalogue unavailable. Try reloading; inventory is still private.';notice('Could not load the saved support catalogue.');}
