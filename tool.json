@@ -16,6 +16,7 @@
   "access": "browser",
   "data_info": {
     "mode": "mixed",
-    "detail": "Saved endoflife.date support windows are matched to a private inventory in your browser."
+    "detail": "Saved endoflife.date support windows are matched to a private inventory in your browser.",
+    "cadence": "Weekly"
   }
 }
