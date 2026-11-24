@@ -21,3 +21,11 @@ The selected product catalogue refreshes Mondays at 10:43 UTC. Changed catalogue
 ## Verified API semantics
 
 API v1 distinguishes `eolFrom` (standard end of life), `eoasFrom` (end of active support), and `eoesFrom` (end of extended support). `isMaintained` can include extended coverage. Definitions: https://github.com/endoflife-date/endoflife.date/blob/master/api_v1/openapi.yml. The date boundary follows the upstream generator’s strict `Date.today > value` comparison: https://github.com/endoflife-date/endoflife.date/blob/master/_plugins/product-data-enricher.rb. Verified 2026-11-22. An unknown extended-support date does not imply ineligibility or entitlement.
+
+<!-- schedule-reliability -->
+## Schedule reliability
+
+Public GitHub repositories can have scheduled workflows disabled after 60 days of inactivity. A separate weekly [schedule guard](.github/workflows/schedule-guard.yml) calls GitHub's enable-workflow API for an explicit list of refresh workflows and itself. It can restore workflows disabled for inactivity, preserves manually disabled workflows, and runs independently of collection failures.
+
+This is an interim mitigation, not a scheduling guarantee: GitHub does not document active-workflow renewal as a permanent exemption, and scheduled runs can be delayed or dropped. A scheduler on our own Linux server is the planned independent trigger. The guard does not collect data, create dummy commits, or change source/check timestamps; successful collection and published data freshness still need monitoring.
+<!-- /schedule-reliability -->
