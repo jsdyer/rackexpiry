@@ -44,7 +44,11 @@ jobs:
         run: if [ -n "$HC" ]; then curl -fsS --retry 2 --max-time 15 "$HC/start" >/dev/null || true; fi
       - name: Collect public source evidence
         if: steps.mode.outputs.collect == 'true'
-        run: python3 scripts/collect.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/collect.py
+          python3 scripts/collect_releases.py
       - name: Test analytical models and source parsers
         run: |
           node --test tests/*.test.mjs

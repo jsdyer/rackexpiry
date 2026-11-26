@@ -44,3 +44,20 @@ export function parseInventory(text){
 }
 export function validateRows(rows){if(rows.length>500)throw new Error('Maximum 500 inventory rows.');return rows.map(r=>{if(!r||!['asset','product','version'].every(k=>typeof r[k]==='string'&&r[k].trim()&&r[k].length<=160))throw new Error('Each row needs asset, product and version (up to 160 characters).');return {asset:r.asset.trim(),product:r.product.trim().toLowerCase(),version:r.version.trim()};});}
 export function csv(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/^[=+@-]/,"'$&").replaceAll('"','""')+'"').join(',')).join('\r\n');}
+
+// Compare exact dotted numeric stable versions only. Calendar/distro suffixes and
+// abbreviated release cycles cannot establish that an installation is current.
+export function compareStable(installed,latest){
+ const clean=v=>typeof v==='string'?v.trim().replace(/^v(?=\d)/i,''):'';
+ const a=clean(installed),b=clean(latest);if(!/^\d+(?:\.\d+)*$/.test(a)||!/^\d+(?:\.\d+)*$/.test(b))return null;
+ const x=a.split('.'),y=b.split('.');if(x.length!==y.length)return null;
+ for(let i=0;i<x.length;i++){const p=BigInt(x[i]),q=BigInt(y[i]);if(p!==q)return p>q?1:-1;}return 0;
+}
+export function releaseStatus(installed,latest){
+ if(!installed)return 'Enter installed version';if(!latest)return 'Latest version unknown';
+ const n=compareStable(installed,latest);return n===null?'Exact version needs verification':n===0?'Matches recorded release':n<0?'Newer recorded release available':'Installed version is ahead of recorded release';
+}
+export function parseReleaseWatch(value){
+ if(!Array.isArray(value)||value.length>100)throw Error('Maximum 100 release-watch entries.');const ids=new Set();
+ return value.map(r=>{if(!r||typeof r.id!=='string'||!/^[-a-z0-9]+$/.test(r.id)||ids.has(r.id)||typeof r.installed!=='string'||!r.installed.trim()||r.installed.length>160)throw Error('Invalid release-watch entry.');ids.add(r.id);return {id:r.id,installed:r.installed.trim()};});
+}

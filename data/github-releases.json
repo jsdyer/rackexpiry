@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "checked_at": "2026-11-26T04:51:30Z",
+  "records": [
+    {
+      "id": "pihole",
+      "name": "Pi-hole Core",
+      "repository": "pi-hole/pi-hole",
+      "version": "v6.6",
+      "published_at": "2026-11-11T19:20:58Z",
+      "release_id": 438325266,
+      "url": "https://github.com/pi-hole/pi-hole/releases/tag/v6.6",
+      "source": "https://api.github.com/repos/pi-hole/pi-hole/releases/latest"
+    },
+    {
+      "id": "gitea",
+      "name": "Gitea",
+      "repository": "go-gitea/gitea",
+      "version": "v28.4.0",
+      "published_at": "2026-11-15T19:39:47Z",
+      "release_id": 446314598,
+      "url": "https://github.com/go-gitea/gitea/releases/tag/v28.4.0",
+      "source": "https://api.github.com/repos/go-gitea/gitea/releases/latest"
+    },
+    {
+      "id": "jellyfin",
+      "name": "Jellyfin Server",
+      "repository": "jellyfin/jellyfin",
+      "version": "v12.4",
+      "published_at": "2026-10-26T21:30:17Z",
+      "release_id": 424790100,
+      "url": "https://github.com/jellyfin/jellyfin/releases/tag/v12.4",
+      "source": "https://api.github.com/repos/jellyfin/jellyfin/releases/latest"
+    },
+    {
+      "id": "vaultwarden",
+      "name": "Vaultwarden",
+      "repository": "dani-garcia/vaultwarden",
+      "version": "1.37.5",
+      "published_at": "2026-11-01T22:16:50Z",
+      "release_id": 430890331,
+      "url": "https://github.com/dani-garcia/vaultwarden/releases/tag/1.37.5",
+      "source": "https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest"
+    },
+    {
+      "id": "syncthing",
+      "name": "Syncthing",
+      "repository": "syncthing/syncthing",
+      "version": "v2.1.7",
+      "published_at": "2026-10-21T06:09:14Z",
+      "release_id": 419214287,
+      "url": "https://github.com/syncthing/syncthing/releases/tag/v2.1.7",
+      "source": "https://api.github.com/repos/syncthing/syncthing/releases/latest"
+    },
+    {
+      "id": "uptime-kuma",
+      "name": "Uptime Kuma",
+      "repository": "louislam/uptime-kuma",
+      "version": "2.5.12",
+      "published_at": "2026-11-17T15:26:08Z",
+      "release_id": 448806508,
+      "url": "https://github.com/louislam/uptime-kuma/releases/tag/2.5.12",
+      "source": "https://api.github.com/repos/louislam/uptime-kuma/releases/latest"
+    }
+  ],
+  "history": [
+    {
+      "id": "pihole",
+      "name": "Pi-hole Core",
+      "repository": "pi-hole/pi-hole",
+      "version": "v6.6",
+      "published_at": "2026-11-11T19:20:58Z",
+      "release_id": 438325266,
+      "url": "https://github.com/pi-hole/pi-hole/releases/tag/v6.6",
+      "source": "https://api.github.com/repos/pi-hole/pi-hole/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    },
+    {
+      "id": "gitea",
+      "name": "Gitea",
+      "repository": "go-gitea/gitea",
+      "version": "v28.4.0",
+      "published_at": "2026-11-15T19:39:47Z",
+      "release_id": 446314598,
+      "url": "https://github.com/go-gitea/gitea/releases/tag/v28.4.0",
+      "source": "https://api.github.com/repos/go-gitea/gitea/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    },
+    {
+      "id": "jellyfin",
+      "name": "Jellyfin Server",
+      "repository": "jellyfin/jellyfin",
+      "version": "v12.4",
+      "published_at": "2026-10-26T21:30:17Z",
+      "release_id": 424790100,
+      "url": "https://github.com/jellyfin/jellyfin/releases/tag/v12.4",
+      "source": "https://api.github.com/repos/jellyfin/jellyfin/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    },
+    {
+      "id": "vaultwarden",
+      "name": "Vaultwarden",
+      "repository": "dani-garcia/vaultwarden",
+      "version": "1.37.5",
+      "published_at": "2026-11-01T22:16:50Z",
+      "release_id": 430890331,
+      "url": "https://github.com/dani-garcia/vaultwarden/releases/tag/1.37.5",
+      "source": "https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    },
+    {
+      "id": "syncthing",
+      "name": "Syncthing",
+      "repository": "syncthing/syncthing",
+      "version": "v2.1.7",
+      "published_at": "2026-10-21T06:09:14Z",
+      "release_id": 419214287,
+      "url": "https://github.com/syncthing/syncthing/releases/tag/v2.1.7",
+      "source": "https://api.github.com/repos/syncthing/syncthing/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    },
+    {
+      "id": "uptime-kuma",
+      "name": "Uptime Kuma",
+      "repository": "louislam/uptime-kuma",
+      "version": "2.5.12",
+      "published_at": "2026-11-17T15:26:08Z",
+      "release_id": 448806508,
+      "url": "https://github.com/louislam/uptime-kuma/releases/tag/2.5.12",
+      "source": "https://api.github.com/repos/louislam/uptime-kuma/releases/latest",
+      "first_observed_at": "2026-11-26T04:49:11Z"
+    }
+  ],
+  "note": "GitHub latest published non-prerelease releases for configured projects; may differ from distribution packages. First observation is not release time."
+}

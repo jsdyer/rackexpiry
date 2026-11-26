@@ -1,0 +1,10 @@
+{
+  "projects": [
+    {"id":"pihole", "name":"Pi-hole Core", "repository":"pi-hole/pi-hole"},
+    {"id":"gitea", "name":"Gitea", "repository":"go-gitea/gitea"},
+    {"id":"jellyfin", "name":"Jellyfin Server", "repository":"jellyfin/jellyfin"},
+    {"id":"vaultwarden", "name":"Vaultwarden", "repository":"dani-garcia/vaultwarden"},
+    {"id":"syncthing", "name":"Syncthing", "repository":"syncthing/syncthing"},
+    {"id":"uptime-kuma", "name":"Uptime Kuma", "repository":"louislam/uptime-kuma"}
+  ]
+}
