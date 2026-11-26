@@ -13,10 +13,14 @@ with tempfile.TemporaryDirectory() as d:
   with sync_playwright() as p:
    browser=p.chromium.launch();page=browser.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.goto(f'http://127.0.0.1:{server.server_port}/rackexpiry/');page.wait_for_function("document.querySelector('#product').options.length > 10")
+   page.set_viewport_size({'width':390,'height':844});assert page.locator('#example').bounding_box()['y']<600
    page.locator('#example').click();assert page.locator('#total').inner_text()=='5'
+   assert page.locator('#queue-title').evaluate('node => node === document.activeElement')
+   page.set_viewport_size({'width':1440,'height':1000})
    page.locator('#asset').fill('<img src=x onerror=alert(1)>');page.locator('#product').select_option('php');page.locator('#version').fill('8.5');page.locator('#add button').click();assert page.locator('.item').count()==6;assert page.locator('img').count()==0
    page.locator('#asset').fill('@rack, \"one\"');page.locator('#add button').click();assert page.locator('#total').inner_text()=='7'
    page.locator('#save').click();page.reload();page.wait_for_function("document.querySelector('#total').textContent === '7'")
+   page.locator('#example').click();assert page.locator('#total').inner_text()=='7'
    with page.expect_download() as download:page.locator('#export').click()
    assert download.value.suggested_filename.endswith('.csv')
    with page.expect_download() as backup:page.locator('#export-json').click()
