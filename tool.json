@@ -1,7 +1,7 @@
 {
   "id": "rackexpiry",
   "title": "Rack Expiry",
-  "description": "Match your software inventory to published support windows and plan the next upgrade.",
+  "description": "Match your software inventory to support windows and compare installed application releases.",
   "category": "projects",
   "tags": [
     "software",
@@ -16,7 +16,7 @@
   "access": "browser",
   "data_info": {
     "mode": "mixed",
-    "detail": "Saved endoflife.date support windows are matched to a private inventory in your browser.",
+    "detail": "Saved endoflife.date support windows and selected public GitHub releases are compared with private installed versions in your browser.",
     "cadence": "Weekly"
   }
 }
